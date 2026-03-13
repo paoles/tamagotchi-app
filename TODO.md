@@ -1,3 +1,11 @@
+## Deployment
+
+- [x] Publish to GitHub (https://github.com/paoles/tamagotchi-app)
+- [x] Deploy to Vercel (auto-deploys on push to main)
+- [x] Fix TypeScript build errors (ActionEffects FOOD_EMOJIS, usePetState name cast)
+
+---
+
 # Tamagotchi App - TODO
 
 Actionable checklist. See PLAN.md for detailed design per phase.

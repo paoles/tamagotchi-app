@@ -18,6 +18,17 @@ export PATH="/c/Program Files/nodejs:$PATH" && npm run dev
 
 Or use the launch.json config which runs `node node_modules/next/dist/bin/next dev` directly on port 3000.
 
+
+## Deployment
+
+- **GitHub**: https://github.com/paoles/tamagotchi-app
+- **Vercel**: Auto-deploys from main branch on every push
+- To deploy changes: On branch main
+Your branch is up to date with 'origin/main'.
+
+nothing to commit, working tree clean
+- Build command:  (must pass TypeScript checks)
+
 ## Architecture
 
 ```
