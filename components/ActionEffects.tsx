@@ -27,7 +27,7 @@ export default function ActionEffects({ effectId }: ActionEffectsProps) {
             animationDuration: `${0.6 + Math.random() * 0.4}s`,
           }}
         >
-          {config.emoji ?? FOOD_EMOJIS[i % FOOD_EMOJIS.length]}
+          {config.emoji}
         </span>
       ))}
     </div>

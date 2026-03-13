@@ -158,7 +158,7 @@ export function usePetState() {
 
   const namePet = useCallback((name: string) => {
     setPetState((prev) => {
-      let state = { ...prev, name: name.trim() };
+      let state = { ...prev, name: name.trim() } as PetState;
       state = addLogEntry(state, `Named "${name.trim()}"`, "event");
       return state;
     });
