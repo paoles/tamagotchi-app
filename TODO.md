@@ -7,6 +7,21 @@
 ---
 
 # Tamagotchi App - TODO
+## Security Hardening
+
+- [x] Run full security audit (XSS, injection, localStorage, deps, headers)
+- [x] Add HTTP security headers to next.config.ts:
+  - X-Content-Type-Options: nosniff
+  - X-Frame-Options: SAMEORIGIN
+  - X-XSS-Protection: 1; mode=block
+  - Referrer-Policy: strict-origin-when-cross-origin
+  - Permissions-Policy: camera=(), microphone=(), geolocation=()
+- [x] Confirmed: no dangerouslySetInnerHTML, no eval(), no secrets in client code
+- [x] Confirmed: localStorage stores only game state (no sensitive data)
+- [x] Confirmed: JSON.parse wrapped in try/catch, prototype pollution safe
+- [x] Confirmed: only 3 production deps (Next.js 15, React 19, react-dom) — no known CVEs
+
+
 
 Actionable checklist. See PLAN.md for detailed design per phase.
 
@@ -61,8 +76,10 @@ Actionable checklist. See PLAN.md for detailed design per phase.
 
 ## Pre-Phase 5 - Gameplay Mechanics
 
-- [x] Actions consume energy: feed (-3), play (-8), clean (-5)
+- [x] Actions consume energy: feed (-2), play (-6), clean (0 — no cost)
 - [x] Actions reduce hygiene: feed (-5), play (-10)
+- [x] Feed amount increased to +35 hunger
+- [x] Energy recovery rate increased to 3.5/min while sleeping
 
 ## Phase 5 - Pet Interactivity & Animation
 

@@ -91,9 +91,10 @@ Replace flat ActionButton with **3D tactile plastic buttons**.
 - Cooldown indicator: 3px amber drain bar (absolute-positioned, rAF-animated, no layout shift)
 
 ### Action Side Effects (implemented)
-- Feed: -3 energy, -5 hygiene (eating is messy)
-- Play: -8 energy, -10 hygiene (playing gets dirty)
-- Clean: -5 energy
+- Feed: +35 hunger, -2 energy, -5 hygiene (eating is messy)
+- Play: +25 happiness, -6 energy, -10 hygiene (playing gets dirty)
+- Clean: +30 hygiene, no energy cost
+- Energy recovery: 3.5/min while sleeping (was 2.5)
 
 ### Files to Change
 - components/ActionButton.tsx (restyle)
@@ -346,6 +347,33 @@ Each theme is a config entry in `BACKGROUND_THEMES` with ground colors per phase
 - Stat decay rounding edge cases
 
 ---
+
+
+---
+
+## Security Hardening ✅
+
+Completed security audit and hardened the deployment configuration.
+
+### Audit Findings
+- No XSS vulnerabilities (no dangerouslySetInnerHTML anywhere)
+- No code injection (no eval, Function constructor, or dynamic code)
+- No sensitive data in localStorage (game state only)
+- No secrets or API keys in client code
+- No external scripts or CDN dependencies
+- Only 3 production deps (Next.js 15, React 19, react-dom) — all current, no known CVEs
+- TypeScript strict mode enabled throughout
+
+### Changes Made
+- Added HTTP security headers to `next.config.ts`:
+  - `X-Content-Type-Options: nosniff` — prevents MIME-type sniffing
+  - `X-Frame-Options: SAMEORIGIN` — prevents clickjacking
+  - `X-XSS-Protection: 1; mode=block` — legacy XSS filter for older browsers
+  - `Referrer-Policy: strict-origin-when-cross-origin` — controls referrer leakage
+  - `Permissions-Policy` — disables camera, mic, geolocation access
+
+### Files Changed
+- next.config.ts (added headers() export)
 
 ## Architecture Notes
 

@@ -128,11 +128,11 @@ Stages: `egg -> baby -> child -> teen -> adult`
 | Happiness decay | 0.5/min | |
 | Hygiene decay | 0.3/min | |
 | Energy decay | 0.4/min | While awake |
-| Energy recovery | 2.0/min | While sleeping |
+| Energy recovery | 3.5/min | While sleeping |
 | Sleep decay mult | 0.3 | Stats decay at 30% while asleep |
-| Feed amount | +20 | Hunger; -3 energy, -5 hygiene |
+| Feed amount | +35 | Hunger; -2 energy, -5 hygiene |
 | Play amount | +25 | Happiness; -8 energy, -10 hygiene |
-| Clean amount | +30 | Hygiene; -5 energy |
+| Clean amount | +30 | Hygiene; no energy cost |
 | Overfeed threshold | 90 | Feeding above this = -10 happiness |
 | Death timer | 3 min | Any stat at 0 for this long = death |
 | Random event chance | 5% | Per tick |

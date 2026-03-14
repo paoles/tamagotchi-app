@@ -7,7 +7,7 @@ export const DECAY_RATES = {
 } as const;
 
 export const ACTION_EFFECTS = {
-  feed: 20,
+  feed: 35,
   play: 25,
   clean: 30,
 } as const;
@@ -24,7 +24,7 @@ export const DEFAULT_PET_STATE = {
 
 // Energy
 export const ENERGY_DECAY_RATE = 0.4;
-export const ENERGY_RECOVERY_RATE = 2.5;
+export const ENERGY_RECOVERY_RATE = 3.5;
 export const SLEEP_DECAY_MULTIPLIER = 0.3;
 export const LOW_ENERGY_THRESHOLD = 20;
 export const LOW_ENERGY_ACTION_MULTIPLIER = 0.5;
@@ -58,7 +58,7 @@ export const STAGE_DECAY_MULTIPLIERS: Record<string, number> = {
 export const ACTION_ENERGY_COSTS: Record<string, number> = {
   feed: 2,
   play: 6,
-  clean: 3,
+  clean: 0,
 };
 
 // Hygiene costs per action (eating is messy, playing gets dirty)
