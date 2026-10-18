@@ -262,6 +262,10 @@ func _on_acted(action: String, res: Dictionary) -> void:
 	if not res.ok:
 		world.say({"full": "cross", "stubborn": "angry", "tired": "zzz", "unfair": "tear", "not_sleepy": "cross"}.get(res.why, "question"))
 		var key := "t_" + String(res.why)
+		if String(res.get("toast", "")) != "":
+			toast(res.toast, res.get("icon", ""))
+			sfx.play("refuse")
+			return
 		if S.T.has(key):
 			_say(key, {}, "cross" if res.why != "asleep" else "zzz")
 		if res.anim in ["refuse", "sad"]:
@@ -275,6 +279,15 @@ func _on_acted(action: String, res: Dictionary) -> void:
 		"meal", "snack":
 			sfx.play("eat")
 			pv.play("eat", action)
+		"food":
+			sfx.play("eat")
+			pv.play("eat", res.get("food", "snack"))
+		"toy":
+			sfx.play("happy")
+			pv.play("play", res.get("toy", ""))
+			world.burst("mini_heart", 5)
+		"buy":
+			sfx.play("buy")
 		"play":
 			sfx.play("happy")
 			pv.play("play")

@@ -144,6 +144,38 @@ func _run() -> void:
 	ui.open_screen("memorial")
 	await shot("memorial")
 	reset_ui()
+	# Economy: a furnished room, shop, wardrobe, decor.
+	g.new_generation()
+	g.save.coins = 500
+	for id in ["bow", "glasses", "scarf", "plant", "lamp", "poster_star", "clock", "rug_round", "sill_cat", "wall_mint", "floor_pink", "ball", "yarn"]:
+		g.save.owned[id] = true
+	g.save.inventory = {"apple": 3, "cake": 1}
+	g.save.room.wallpaper = "wall_mint"
+	g.save.room.floor = "floor_pink"
+	g.save.room.slots = {"wall_l": "poster_star", "wall_r": "clock", "floor_l": "plant", "floor_r": "lamp", "sill": "sill_cat", "rug": "rug_round"}
+	g.save.equipped = {"head": "bow", "face": "glasses", "neck": "scarf"}
+	set_form("puffle")
+	g.debug_minute = 720
+	g.debug_weather = "clear"
+	await shot("furnished_room_outfit")
+	set_form("comet")
+	g.save.equipped = {"head": "party_hat", "face": "shades", "neck": "bell"}
+	g.save.owned["party_hat"] = true
+	g.save.owned["shades"] = true
+	g.save.owned["bell"] = true
+	await shot("outfit_comet")
+	ui.open_screen("shop")
+	await shot("shop_food")
+	reset_ui()
+	ui.open_screen("wardrobe")
+	await shot("wardrobe")
+	reset_ui()
+	ui.open_screen("decor")
+	await shot("decor")
+	reset_ui()
+	ui.open_screen("feed")
+	await shot("feed_with_treats")
+	reset_ui()
 	for name in Screens.EXTRA.keys():
 		if name.begins_with("snap_"):
 			await Screens.EXTRA[name].call(self)

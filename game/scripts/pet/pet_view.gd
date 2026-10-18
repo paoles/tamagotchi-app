@@ -197,7 +197,7 @@ func _draw() -> void:
 		_draw_outfit(p, form, origin)
 	if _flash > 0.0 and fmod(_flash, 0.24) < 0.12:
 		draw_texture(Forms.silhouette(form), origin, Color(1, 1, 1, 0.9))
-	if _food != "" and _anim == "eat":
+	if _food != "" and (_anim == "eat" or _anim == "play"):
 		var bite := clampf(_anim_t / _anim_len, 0.0, 1.0)
 		if bite < 0.85:
 			var ft := Items.tex(_food)

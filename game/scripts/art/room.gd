@@ -43,11 +43,10 @@ static func layout(size: Vector2, top: float, bottom: float) -> Dictionary:
 		"slots": {
 			"wall_l":  Vector2(floorf(win.position.x / 2.0), win.position.y + 14),
 			"wall_r":  Vector2(floorf((win.end.x + w) / 2.0), win.position.y + 14),
-			"sill":    Vector2(win.position.x + win_w * 0.5, win.end.y + 1),
-			"floor_l": Vector2(16, floor_y + 6),
-			"floor_r": Vector2(w - 16, floor_y + 6),
-			"corner":  Vector2(w - 12, floor_y + 4),
-			"rug":     Vector2(floorf(w / 2.0), ground + 2),
+			"sill":    Vector2(floorf(win.position.x + win_w * 0.78), win.end.y + 2),
+			"floor_l": Vector2(3, floorf(lerpf(floor_y, ground, 0.45))),
+			"floor_r": Vector2(w - 3, floorf(lerpf(floor_y, ground, 0.45))),
+			"rug":     Vector2(floorf(w / 2.0), ground + 1),
 		},
 	}
 

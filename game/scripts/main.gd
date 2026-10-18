@@ -26,6 +26,7 @@ func _ready() -> void:
 	if snapping:
 		SaveStore.disabled = true
 
+	ScreensShop.register()
 	game = Game.new()
 	game.name = "Game"
 	add_child(game)

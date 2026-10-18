@@ -99,6 +99,8 @@ const G := {
 static func image(name: String) -> Image:
 	if G.has(name):
 		return Px.grid_image(G[name])
+	if Goods.G.has(name) or name == "ball":
+		return Goods.image(name)
 	return Icons.image(name)
 
 static func tex(name: String) -> Texture2D:

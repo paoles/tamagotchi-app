@@ -12,7 +12,7 @@ const WALL_SLOTS := ["wall_l", "wall_r"]
 
 static func draw(ci: CanvasItem, save: Dictionary, lay: Dictionary, anim_t: float) -> void:
 	var slots: Dictionary = save.room.slots
-	for slot in ["wall_l", "wall_r", "floor_l", "floor_r", "corner", "sill", "rug"]:
+	for slot in ["wall_l", "wall_r", "floor_l", "floor_r", "sill", "rug"]:
 		var id: String = slots.get(slot, "")
 		if id == "":
 			continue
@@ -22,10 +22,13 @@ static func draw(ci: CanvasItem, save: Dictionary, lay: Dictionary, anim_t: floa
 		var at: Vector2 = lay.slots[slot]
 		var size := tex.get_size()
 		var pos := Vector2.ZERO
-		if slot in WALL_SLOTS:
-			pos = Vector2(at.x - floorf(size.x / 2.0), at.y - floorf(size.y / 2.0))
-		elif slot == "rug":
-			pos = Vector2(at.x - floorf(size.x / 2.0), at.y - floorf(size.y / 2.0))
-		else:
-			pos = Vector2(at.x - floorf(size.x / 2.0), at.y - size.y)
+		match slot:
+			"wall_l", "wall_r", "rug":
+				pos = Vector2(at.x - floorf(size.x / 2.0), at.y - floorf(size.y / 2.0))
+			"floor_l":
+				pos = Vector2(at.x, at.y - size.y)
+			"floor_r":
+				pos = Vector2(at.x - size.x, at.y - size.y)
+			_:
+				pos = Vector2(at.x - floorf(size.x / 2.0), at.y - size.y)
 		ci.draw_texture(tex, pos.round())

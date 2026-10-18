@@ -49,6 +49,7 @@ func _extra_sheets() -> Dictionary:
 	var items := load("res://scripts/art/items.gd")
 	if items != null and items.has_method("contact_sheet"):
 		out["items"] = items.contact_sheet()
+	out["goods"] = Goods.contact_sheet()
 	var font := load("res://scripts/art/pixel_font.gd")
 	if font != null and font.has_method("contact_sheet"):
 		out["font"] = font.contact_sheet()
