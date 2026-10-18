@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#fdf4ec">
+<meta name="description" content="Pixel Pet: a tiny friend that lives in real time.">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Pixel Pet">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<title>$GODOT_PROJECT_NAME</title>
+<style>
+	html, body, #canvas { margin: 0; padding: 0; border: 0; }
+	html, body { height: 100%; background: #fdf4ec; }
+	body { overflow: hidden; touch-action: none; -webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: transparent; }
+	#canvas { display: block; width: 100vw; height: 100vh; height: 100dvh; }
+	#canvas:focus { outline: none; }
+	#boot {
+		position: fixed; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px;
+		background: #fdf4ec; color: #5a4a6a; font: 600 15px/1.4 ui-monospace, "Cascadia Mono", Menlo, monospace; letter-spacing: 1px;
+		transition: opacity .35s ease;
+	}
+	#boot.hidden { opacity: 0; pointer-events: none; }
+	#egg { width: 64px; height: 64px; image-rendering: pixelated; animation: wobble 1.2s ease-in-out infinite; }
+	@keyframes wobble { 0%,100% { transform: rotate(-6deg); } 50% { transform: rotate(6deg); } }
+	#bar { width: 180px; height: 12px; border: 3px solid #5a4a6a; background: #fff; box-sizing: content-box; }
+	#fill { width: 0; height: 100%; background: #f4a7b9; transition: width .15s linear; }
+	#notice { max-width: 280px; text-align: center; white-space: pre-line; font-weight: 500; font-size: 13px; }
+	@media (prefers-reduced-motion: reduce) { #egg { animation: none; } }
+</style>
+$GODOT_HEAD_INCLUDE
+</head>
+<body>
+<canvas id="canvas">Your browser does not support the canvas tag.</canvas>
+<noscript>Pixel Pet needs JavaScript.</noscript>
+<div id="boot">
+	<svg id="egg" viewBox="0 0 16 16" shape-rendering="crispEdges" aria-hidden="true">
+		<rect x="6" y="1" width="4" height="1" fill="#5a4a6a"/><rect x="4" y="2" width="2" height="1" fill="#5a4a6a"/><rect x="10" y="2" width="2" height="1" fill="#5a4a6a"/>
+		<rect x="3" y="3" width="1" height="2" fill="#5a4a6a"/><rect x="12" y="3" width="1" height="2" fill="#5a4a6a"/><rect x="2" y="5" width="1" height="7" fill="#5a4a6a"/>
+		<rect x="13" y="5" width="1" height="7" fill="#5a4a6a"/><rect x="3" y="12" width="1" height="2" fill="#5a4a6a"/><rect x="12" y="12" width="1" height="2" fill="#5a4a6a"/>
+		<rect x="4" y="14" width="8" height="1" fill="#5a4a6a"/>
+		<rect x="6" y="2" width="4" height="1" fill="#fff7ef"/><rect x="4" y="3" width="8" height="2" fill="#fff7ef"/><rect x="3" y="5" width="10" height="7" fill="#fff7ef"/><rect x="4" y="12" width="8" height="2" fill="#fff7ef"/>
+		<rect x="5" y="6" width="2" height="2" fill="#f4a7b9"/><rect x="9" y="9" width="3" height="2" fill="#a8d8c8"/><rect x="6" y="11" width="2" height="1" fill="#c9b6e4"/>
+	</svg>
+	<div id="bar"><div id="fill"></div></div>
+	<div id="notice">Warming up the egg…</div>
+</div>
+<script src="$GODOT_URL"></script>
+<script>
+const GODOT_CONFIG = $GODOT_CONFIG;
+const GODOT_THREADS_ENABLED = $GODOT_THREADS_ENABLED;
+const engine = new Engine(GODOT_CONFIG);
+
+(function () {
+	const boot = document.getElementById('boot');
+	const fill = document.getElementById('fill');
+	const notice = document.getElementById('notice');
+	function fail(err) {
+		notice.textContent = String(err && err.message ? err.message : err);
+		console.error(err);
+	}
+	const missing = Engine.getMissingFeatures({ threads: GODOT_THREADS_ENABLED });
+	if (missing.length !== 0) {
+		fail('Your browser is missing features Pixel Pet needs:\n' + missing.join('\n'));
+		return;
+	}
+	engine.startGame({
+		onProgress: function (current, total) {
+			if (current > 0 && total > 0) fill.style.width = Math.min(100, (current / total) * 100) + '%';
+		},
+	}).then(function () {
+		boot.classList.add('hidden');
+		setTimeout(function () { boot.remove(); }, 400);
+	}, fail);
+}());
+</script>
+<script src="pixelpet.js" defer></script>
+</body>
+</html>

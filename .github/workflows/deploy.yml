@@ -1,0 +1,79 @@
+name: Build and deploy
+
+# Godot can't run inside Vercel's build, so CI exports the web build
+# and hands Vercel a prebuilt output. Pushes to main deploy to
+# production; other pushes and PRs from this repo get preview URLs.
+
+on:
+  push:
+    branches: [main, v2]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  GODOT_VERSION: 4.7.1
+  HAS_VERCEL: ${{ secrets.VERCEL_TOKEN != '' }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache Godot
+        uses: actions/cache@v4
+        with:
+          path: ~/godot-dl
+          key: godot-${{ env.GODOT_VERSION }}-linux
+
+      - name: Install Godot and export templates
+        run: |
+          set -euo pipefail
+          BASE="https://github.com/godotengine/godot-builds/releases/download/${GODOT_VERSION}-stable"
+          mkdir -p ~/godot-dl ~/godot
+          cd ~/godot-dl
+          [ -f godot.zip ] || curl -fsSL -o godot.zip "$BASE/Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip"
+          [ -f templates.tpz ] || curl -fsSL -o templates.tpz "$BASE/Godot_v${GODOT_VERSION}-stable_export_templates.tpz"
+          unzip -o -q godot.zip -d ~/godot
+          mv ~/godot/Godot_v${GODOT_VERSION}-stable_linux.x86_64 ~/godot/godot
+          TPL=~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
+          mkdir -p "$TPL" ~/tpl
+          unzip -o -q templates.tpz -d ~/tpl
+          mv ~/tpl/templates/* "$TPL"/
+
+      - name: Import project
+        run: |
+          # The godot_ai editor plugin is only for local editor sessions.
+          sed -i 's#^enabled=PackedStringArray("res://addons/godot_ai/plugin.cfg")#enabled=PackedStringArray()#' game/project.godot
+          ~/godot/godot --headless --path game --import
+
+      - name: Simulation checks
+        run: ~/godot/godot --headless --path game -- sim
+
+      - name: Export web build
+        run: |
+          mkdir -p dist
+          ~/godot/godot --headless --path game --export-release "Web" ../dist/index.html
+          cp -r web-static/. dist/
+          ls -la dist
+
+      - name: Deploy to Vercel
+        if: ${{ env.HAS_VERCEL == 'true' && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) }}
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+          PROD: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' }}
+        run: |
+          set -euo pipefail
+          npm install -g vercel@latest
+          if [ "$PROD" = "true" ]; then ENV=production; FLAG=--prod; else ENV=preview; FLAG=; fi
+          vercel pull --yes --environment=$ENV --token="$VERCEL_TOKEN"
+          vercel build $FLAG --token="$VERCEL_TOKEN"
+          URL=$(vercel deploy --prebuilt $FLAG --token="$VERCEL_TOKEN")
+          echo "Deployed: $URL"
+          echo "### Deployed to $ENV: $URL" >> "$GITHUB_STEP_SUMMARY"
