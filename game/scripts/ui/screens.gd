@@ -147,8 +147,8 @@ static func _name(ui: GameUI) -> void:
 		edit.editable = false
 		edit.gui_input.connect(func(e: InputEvent) -> void:
 			if e is InputEventMouseButton and e.pressed:
-				var typed: Variant = JavaScriptBridge.eval("window.prompt('Name your pet (up to %d letters)', '') || ''" % Cfg.NAME_MAX)
-				if typed is String:
+				var typed := WebBridge.prompt_text("Name your pet (up to %d letters)" % Cfg.NAME_MAX)
+				if typed != "":
 					edit.text = Care.sanitize_name(typed))
 	var row := Kit.hbox(8)
 	row.add_child(_big(Kit.button(S.t("name_random"), func() -> void:

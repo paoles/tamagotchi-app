@@ -22,7 +22,7 @@ static func new_save(t: int) -> Dictionary:
 		"settings": {
 			"sound": true, "music": true, "reduced_motion": false,
 			"push": Cfg.PUSH_DEFAULTS.duplicate(), "push_enabled": false,
-			"debug_unlocked": false, "schedule_set": false,
+			"debug_unlocked": false, "schedule_set": false, "vapid": "",
 		},
 		"schedule": {"bed": Cfg.DEFAULT_BED, "wake": Cfg.DEFAULT_WAKE},
 		"pet": {},

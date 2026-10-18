@@ -18,6 +18,10 @@ func _ready() -> void:
 		var harness: RefCounted = load("res://scripts/harness/sim_harness.gd").new()
 		get_tree().quit(harness.run())
 		return
+	if "icons" in args:
+		var ic: RefCounted = load("res://scripts/harness/art_harness.gd").new()
+		get_tree().quit(ic.icons(_arg_after(args, "icons", "user://icons")))
+		return
 	if "art" in args:
 		var art: RefCounted = load("res://scripts/harness/art_harness.gd").new()
 		get_tree().quit(art.run(ProjectSettings.globalize_path(_arg_after(args, "art", "user://snaps/art"))))
@@ -40,6 +44,12 @@ func _ready() -> void:
 	var music := Music.new()
 	music.name = "Music"
 	add_child(music)
+
+	var online := Online.new()
+	online.name = "Online"
+	online.game = game
+	add_child(online)
+	ScreensOnline.register(online)
 
 	ui = GameUI.new()
 	ui.name = "UI"

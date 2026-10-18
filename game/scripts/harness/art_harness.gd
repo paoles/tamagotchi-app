@@ -19,6 +19,37 @@ func run(out_dir: String) -> int:
 	print("art sheets written to ", out_dir)
 	return 0
 
+# PWA icons: the happy Mochi on a pastel tile.
+func icons(out_dir: String) -> int:
+	DirAccess.make_dir_recursive_absolute(out_dir)
+	for spec in [["icon-192.png", 192, false], ["icon-512.png", 512, false], ["icon-maskable-512.png", 512, true], ["icon-180.png", 180, false], ["favicon-32.png", 32, false]]:
+		_save(_icon(spec[1], spec[2]), out_dir.path_join(spec[0]))
+	print("icons written to ", out_dir)
+	return 0
+
+func _icon(px: int, maskable: bool) -> Image:
+	var img := Image.create_empty(px, px, false, Image.FORMAT_RGBA8)
+	var bg := Color("cdeee0")
+	img.fill(bg if maskable else Color(0, 0, 0, 0))
+	if not maskable:
+		# Rounded tile with a plum border.
+		var rad := px * 0.22
+		for y in px:
+			for x in px:
+				var dx := maxf(0.0, maxf(rad - x, x - (px - 1 - rad)))
+				var dy := maxf(0.0, maxf(rad - y, y - (px - 1 - rad)))
+				var d := sqrt(dx * dx + dy * dy)
+				if d <= rad:
+					img.set_pixel(x, y, Pal.INK if d > rad - maxf(2.0, px / 40.0) else bg)
+	var sprite := Forms.compose("mochi", "happy")
+	var scale := maxi(1, floori(px * (0.62 if maskable else 0.78) / 16.0))
+	var big := Px.scaled(sprite, scale)
+	var bx := (px - big.get_width()) / 2
+	# The baby sits low in its 32×32 canvas; centre its visible body.
+	var by := (px - big.get_height()) / 2 - roundi(9.0 * scale)
+	Px.stamp(img, big, bx, by)
+	return img
+
 func _save(img: Image, path: String) -> void:
 	var err := img.save_png(path)
 	if err != OK:
