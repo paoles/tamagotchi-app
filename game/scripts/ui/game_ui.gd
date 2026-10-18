@@ -260,6 +260,7 @@ func _on_event(e: Dictionary) -> void:
 func _on_acted(action: String, res: Dictionary) -> void:
 	var pv := world.pet_view
 	if not res.ok:
+		world.say({"full": "cross", "stubborn": "angry", "tired": "zzz", "unfair": "tear", "not_sleepy": "cross"}.get(res.why, "question"))
 		var key := "t_" + String(res.why)
 		if S.T.has(key):
 			_say(key, {}, "cross" if res.why != "asleep" else "zzz")
@@ -287,16 +288,33 @@ func _on_acted(action: String, res: Dictionary) -> void:
 		"scold":
 			sfx.play("scold")
 			pv.play("scolded")
+			world.say("sweat")
 			_say("t_disciplined", {}, "discipline")
 		"tap":
 			sfx.play("tap")
 			if res.why == "loved":
 				pv.play("tap")
 				world.burst("mini_heart", 3, 8, 12)
+				world.say("heart", 1.4)
 			else:
 				pv.play("happy")
 	if res.has("toast"):
 		toast(res.toast, res.get("icon", ""))
+
+var minigame_active := false
+
+func _process(_delta: float) -> void:
+	if music == null:
+		return
+	var p: Dictionary = game.save.pet
+	var song := "day"
+	if minigame_active:
+		song = "game"
+	elif not p.is_empty() and p.alive and (p.asleep or not p.lights):
+		song = "night"
+	elif SkyCycle.star_alpha(world.minute_now()) > 0.6:
+		song = "night"
+	music.want(song)
 
 func _on_anim_finished(name: String) -> void:
 	if name == "eat":

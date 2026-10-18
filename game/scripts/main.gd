@@ -35,10 +35,15 @@ func _ready() -> void:
 	sfx.name = "Sfx"
 	add_child(sfx)
 
+	var music := Music.new()
+	music.name = "Music"
+	add_child(music)
+
 	ui = GameUI.new()
 	ui.name = "UI"
 	ui.game = game
 	ui.sfx = sfx
+	ui.music = music
 	add_child(ui)
 
 	if snapping:

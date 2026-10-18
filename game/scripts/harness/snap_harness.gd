@@ -76,6 +76,17 @@ func _run() -> void:
 	g.save.settings.schedule_set = true
 	pet().poops = [{"age": 10, "x": 0.2, "flag": false}, {"age": 30, "x": 0.8, "flag": false}]
 	await shot("baby_day_poop")
+	pet().hunger = 40.0
+	g.act("meal")
+	await _wait(0.2)
+	await shot("eating")
+	await _wait(1.6)
+	g.act("play")
+	await _wait(0.1)
+	await shot("playing")
+	await _wait(1.4)
+	main.ui.world.say("note", 3.0)
+	await shot("bubble_note")
 	ui.open_screen("feed")
 	await shot("feed_sheet")
 	reset_ui()
