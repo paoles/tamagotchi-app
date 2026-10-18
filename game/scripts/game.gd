@@ -12,6 +12,9 @@ extends Node
 signal changed
 signal event(e: Dictionary)
 signal acted(action: String, res: Dictionary)
+signal caught_up(events: Array)   # a long gap was simulated in one go
+
+const RECAP_GAP := 15 * 60
 
 var save: Dictionary = {}
 var recap_events: Array = []
@@ -45,6 +48,11 @@ func _process(delta: float) -> void:
 		persist()
 
 func step() -> void:
+	# Browsers pause hidden tabs, so a long gap can show up here too:
+	# summarize it instead of replaying every event.
+	if Clock.now() - int(save.sim_time) > RECAP_GAP:
+		_catch_up()
+		return
 	var events := Sim.advance(save, Clock.now())
 	events.append_array(_badges())
 	for e in events:
@@ -145,11 +153,13 @@ func _notification(what: int) -> void:
 		if not save.is_empty():
 			persist()
 	elif what == NOTIFICATION_APPLICATION_FOCUS_IN or what == NOTIFICATION_APPLICATION_RESUMED:
-		if not save.is_empty():
-			var gap := Clock.now() - int(save.sim_time)
-			if gap > 15 * 60:
-				recap_events = Sim.advance(save, Clock.now())
-				for e in recap_events:
-					event.emit(e)
-				persist()
-				changed.emit()
+		if not save.is_empty() and Clock.now() - int(save.sim_time) > RECAP_GAP:
+			_catch_up()
+
+func _catch_up() -> void:
+	var events := Sim.advance(save, Clock.now())
+	events.append_array(_badges())
+	recap_events = events
+	persist()
+	caught_up.emit(events)
+	changed.emit()

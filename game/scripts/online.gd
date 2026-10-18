@@ -144,6 +144,8 @@ func _on_hidden() -> void:
 	if push_on():
 		game.step()
 		WebBridge.beacon("/api/push/schedule", _with({"alerts": alerts_payload()}))
-	if Clock.now() - int(game.save.get("last_backup", 0)) > 600:
-		game.save.last_backup = Clock.now()
+	# Beacons can't report success, so only throttle on the attempt;
+	# `last_backup` is set when a backup is confirmed.
+	if Clock.now() - int(game.save.get("backup_try", 0)) > 600:
+		game.save.backup_try = Clock.now()
 		WebBridge.beacon("/api/backup", _with({"save": SaveState.to_json(game.save), "savedAt": int(game.save.saved_at)}))

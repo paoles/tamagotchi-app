@@ -71,12 +71,15 @@ const T := {
 	"sched_bad": "Sleep must be 7 to 11 hours.",
 
 	# Away recap
-	"recap_title": "While you were away",
+	"recap_title": "Welcome back!",
 	"recap_ok": "Okay!",
 	"recap_hatched": "The egg hatched",
 	"recap_evolved": "Grew into a {form}",
 	"recap_pooped": "Pooped {n}x",
 	"recap_mistake": "{n} care mistake(s)",
+	"recap_why_lights": "Lights left on at bedtime",
+	"recap_why_poop": "Poop left too long ({n}x)",
+	"recap_why_ignored_call": "Calls went unanswered ({n}x)",
 	"recap_call": "Called for you {n}x",
 	"recap_slept": "Slept",
 	"recap_nap": "Took {n} nap(s)",

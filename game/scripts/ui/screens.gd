@@ -226,8 +226,12 @@ static func recap_lines(events: Array) -> Array:
 		lines.append(["alert", S.t("recap_call", {"n": counts.call})])
 	if counts.has("nap_start"):
 		lines.append(["zzz", S.t("recap_nap", {"n": counts.nap_start})])
-	if counts.has("mistake"):
-		lines.append(["cross", S.t("recap_mistake", {"n": counts.mistake})])
+	var whys := {}
+	for e in events:
+		if e.type == "mistake":
+			whys[e.why] = int(whys.get(e.why, 0)) + 1
+	for why in whys:
+		lines.append(["cross", S.t("recap_why_" + String(why), {"n": whys[why]})])
 	if lines.is_empty():
 		lines.append(["check", S.t("recap_nothing")])
 	return lines
@@ -370,11 +374,11 @@ static func _debug(ui: GameUI) -> void:
 				p.stage_min = int(Cfg.STAGE_MIN[p.stage]) - 1
 			p.asleep = false
 			p.nap_left = 0
-			g.step())
+			g.time_skip(61))
 	add.call("Spawn poop", func() -> void:
 		if g.save.pet.alive:
 			g.save.pet.poop_due.append(1)
-			g.step())
+			g.time_skip(61))
 	add.call("Fake call", func() -> void:
 		var p: Dictionary = g.save.pet
 		p.call = {"kind": "fake", "min": 0, "flag": false, "reason": "attention"}

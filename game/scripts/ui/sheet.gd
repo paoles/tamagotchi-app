@@ -42,7 +42,7 @@ func setup(title: String, content: Control, is_centered: bool = false, can_dismi
 	var head := Kit.hbox(8)
 	if title_icon != "":
 		head.add_child(Kit.icon(title_icon, 2))
-	var t := Kit.label(title, Kit.FONT_BIG)
+	var t := Kit.label(title, Kit.FONT_BIG if title.length() <= 11 else Kit.FONT)
 	t.clip_text = true
 	t.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	head.add_child(t)

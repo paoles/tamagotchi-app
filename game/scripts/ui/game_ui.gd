@@ -60,6 +60,7 @@ func _ready() -> void:
 
 	game.event.connect(_on_event)
 	game.acted.connect(_on_acted)
+	game.caught_up.connect(_on_caught_up)
 	get_viewport().size_changed.connect(_layout)
 	_apply_settings()
 	_layout()
@@ -164,6 +165,8 @@ func close_sheet() -> void:
 		var s := _sheet
 		_sheet = null
 		s.queue_free()
+		# A queued dialog (e.g. bedtime after naming) opens next.
+		call_deferred("_next_dialog")
 
 func has_sheet() -> bool:
 	return _sheet != null and is_instance_valid(_sheet)
@@ -259,6 +262,21 @@ func _on_event(e: Dictionary) -> void:
 		"badge":
 			sfx.play("win")
 			toast("Badge: %s  +%d" % [e.name, int(e.coins)], "badge")
+
+func _on_caught_up(events: Array) -> void:
+	if events.is_empty():
+		return
+	var types := []
+	for e in events:
+		types.append(e.type)
+	queue_dialog("recap")
+	if "died" in types:
+		sfx.play("death")
+		queue_dialog("death")
+	elif "hatched" in types and game.save.pet.name == "":
+		queue_dialog("name")
+		if not game.save.settings.schedule_set:
+			queue_dialog("schedule")
 
 func _on_acted(action: String, res: Dictionary) -> void:
 	var pv := world.pet_view

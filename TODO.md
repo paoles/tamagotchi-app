@@ -10,9 +10,14 @@
 - [ ] Rename the GitHub repo to `pixel-pet`, then `git remote set-url origin …/pixel-pet.git`
 - [ ] Retire the old `tamagotchi-app` Vercel project
 
-## Verify on the preview URL
+## Verified locally (web export served from dist/, built-in browser)
 
-- [ ] Game loads on phone and desktop; saves survive a reload; works offline after one visit
+- [x] Game loads; layout fills phone and desktop sizes; JS ↔ GDScript bridge works
+- [x] Saves survive a reload (localStorage + IndexedDB); page-hide re-saves
+- [x] Service worker installs; game loads offline with the server stopped
+- [x] Hatch → name → bedtime flow, feeding, Jump Runner, recap after a long gap, live forecast
+
+## Verify on the preview URL
 - [ ] Add to Home Screen; turn on notifications; Debug → Test push arrives
 - [ ] A scheduled alert arrives with the app closed (Debug → +time won't do — wait for a real one)
 - [ ] Backup → transfer code → redeem on a second device
