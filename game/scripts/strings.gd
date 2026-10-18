@@ -13,7 +13,7 @@ const T := {
 
 	# Actions
 	"act_feed": "Feed", "act_play": "Play", "act_clean": "Clean",
-	"act_lights": "Lights", "act_scold": "Scold", "act_more": "More",
+	"act_lights": "Light", "act_scold": "Scold", "act_more": "More",
 	"feed_meal": "Meal", "feed_snack": "Snack",
 	"play_basic": "Play together",
 	"more_status": "Status", "more_shop": "Shop", "more_wardrobe": "Wardrobe",
@@ -62,7 +62,7 @@ const T := {
 	# Hatch flow
 	"name_title": "Name your pet",
 	"name_hint": "Up to 10 letters",
-	"name_ok": "That's the one!",
+	"name_ok": "Done!",
 	"name_random": "Surprise me",
 	"sched_title": "Bedtime",
 	"sched_body": "When should your pet sleep? Pick hours that match your day. No alerts while it sleeps.",
