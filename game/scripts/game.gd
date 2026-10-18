@@ -46,6 +46,7 @@ func _process(delta: float) -> void:
 
 func step() -> void:
 	var events := Sim.advance(save, Clock.now())
+	events.append_array(_badges())
 	for e in events:
 		event.emit(e)
 	if not events.is_empty():
@@ -83,9 +84,17 @@ func act(action: String) -> Dictionary:
 	for e in res.events:
 		event.emit(e)
 	acted.emit(action, res)
+	for e in _badges():
+		event.emit(e)
 	persist()
 	changed.emit()
 	return res
+
+func _badges() -> Array:
+	var out := []
+	for a in Achievements.check(save):
+		out.append({"t": int(save.sim_time), "type": "badge", "id": a.id, "name": a.name, "coins": a.coins})
+	return out
 
 # Shop, games and decor report through here so saving and the
 # change signal stay in one place.
@@ -93,6 +102,8 @@ func apply(res: Dictionary, action: String) -> Dictionary:
 	for e in res.get("events", []):
 		event.emit(e)
 	acted.emit(action, res)
+	for e in _badges():
+		event.emit(e)
 	persist()
 	changed.emit()
 	return res

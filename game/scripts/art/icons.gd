@@ -469,6 +469,14 @@ const G := {
 		".....",
 		"..k..",
 	],
+	"rock": [
+		"...kkkk...",
+		"..kggggk..",
+		".kgWggggk.",
+		"kggggggGGk",
+		"kgggggGGGk",
+		"kkkkkkkkkk",
+	],
 	# Particles
 	"spark": [
 		"..y..",

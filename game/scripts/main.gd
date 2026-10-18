@@ -27,6 +27,7 @@ func _ready() -> void:
 		SaveStore.disabled = true
 
 	ScreensShop.register()
+	ScreensMeta.register()
 	game = Game.new()
 	game.name = "Game"
 	add_child(game)

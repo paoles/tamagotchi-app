@@ -256,6 +256,9 @@ func _on_event(e: Dictionary) -> void:
 			_say("p_daycare", {}, "daycare")
 		"spoiled":
 			_say("t_spoiled", {}, "angry")
+		"badge":
+			sfx.play("win")
+			toast("Badge: %s  +%d" % [e.name, int(e.coins)], "badge")
 
 func _on_acted(action: String, res: Dictionary) -> void:
 	var pv := world.pet_view
@@ -288,6 +291,10 @@ func _on_acted(action: String, res: Dictionary) -> void:
 			world.burst("mini_heart", 5)
 		"buy":
 			sfx.play("buy")
+		"game":
+			sfx.play("coin")
+			pv.play("happy")
+			world.burst("mini_heart", 6)
 		"play":
 			sfx.play("happy")
 			pv.play("play")
@@ -328,6 +335,40 @@ func _process(_delta: float) -> void:
 	elif SkyCycle.star_alpha(world.minute_now()) > 0.6:
 		song = "night"
 	music.want(song)
+
+# --- Mini-games -------------------------------------------------------
+
+const GAMES := {
+	"left_right": "res://scripts/minigames/left_right.gd",
+	"catch_food": "res://scripts/minigames/catch_food.gd",
+	"jump_runner": "res://scripts/minigames/jump_runner.gd",
+}
+
+func open_minigame(kind: String) -> void:
+	var gate := Care._awake_gate(game.save)
+	if gate != "":
+		_say("t_" + gate, {}, "cross")
+		return
+	if game.save.pet.energy < MiniGame.ENERGY:
+		_say("t_tired", {}, "zzz")
+		return
+	close_sheet()
+	var mg: MiniGame = load(GAMES[kind]).new()
+	mg.game = game
+	mg.sfx = sfx
+	mg.position = Vector2.ZERO
+	mg.size = column.size
+	column.add_child(mg)
+	minigame_active = true
+	mg.finished.connect(func(r: Dictionary) -> void:
+		minigame_active = false
+		if r.is_empty():
+			return
+		game.step()
+		var res := Care.game_reward(game.save, int(r.coins), float(r.happy), MiniGame.ENERGY, MiniGame.WEIGHT)
+		res["toast"] = "+%d coins" % int(r.coins)
+		res["icon"] = "coin"
+		game.apply(res, "game"))
 
 func _on_anim_finished(name: String) -> void:
 	if name == "eat":

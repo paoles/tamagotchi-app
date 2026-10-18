@@ -176,6 +176,44 @@ func _run() -> void:
 	ui.open_screen("feed")
 	await shot("feed_with_treats")
 	reset_ui()
+	# Meta: book, family, badges, mini-games.
+	for f in ["puffle", "bloom", "lumina", "zippy", "comet"]:
+		g.save.book[f] = int(g.save.sim_time)
+	g.save.counters["hatched"] = 2
+	g.step()
+	ui.open_screen("book")
+	await shot("book")
+	reset_ui()
+	ui.open_screen("family")
+	await shot("family")
+	reset_ui()
+	ui.open_screen("badges")
+	await shot("badges")
+	reset_ui()
+	ui.open_screen("play")
+	await shot("play_sheet")
+	reset_ui()
+	set_form("bloom")
+	pet().energy = 100.0
+	for kind in ["left_right", "catch_food", "jump_runner"]:
+		ui.open_minigame(kind)
+		await _wait(0.4)
+		await shot("game_%s_intro" % kind)
+		var mg: MiniGame = ui.column.get_child(ui.column.get_child_count() - 1)
+		mg._begin()
+		if kind == "left_right":
+			mg.on_press(Vector2(5, 50))
+		await _wait(1.0)
+		if kind == "jump_runner":
+			mg.on_press(Vector2(5, 5))
+			await _wait(0.15)
+		await shot("game_%s_play" % kind)
+		mg.finish(12, true, "Test run.")
+		await _wait(0.3)
+		await shot("game_%s_result" % kind)
+		mg.quit()
+		ui.minigame_active = false
+		await _wait(0.2)
 	for name in Screens.EXTRA.keys():
 		if name.begins_with("snap_"):
 			await Screens.EXTRA[name].call(self)
